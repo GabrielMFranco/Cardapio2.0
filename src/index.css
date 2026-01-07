@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  --color-main-dark: #050505;
+  --color-neon-blue: #00d4ff;
+  --color-neon-purple: #9200ff;
+
+  
+}
