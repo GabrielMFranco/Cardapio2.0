@@ -18,7 +18,6 @@ export function SignIn(){
         <div className="
         w-screen
         h-screen
-        bg-[#050505] bg-[radial-gradient(circle_at_top_left,var(--color-neon-blue)_0%,transparent_20%),radial-gradient(circle_at_bottom_right,var(--color-neon-purple)_0%,transparent_25%)]
         flex
         justify-center
         ">

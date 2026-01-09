@@ -4,6 +4,16 @@
   --color-main-dark: #050505;
   --color-neon-blue: #00d4ff;
   --color-neon-purple: #9200ff;
+}
 
-  
+body {
+  background-color: var(--color-main-dark);
+  background-image: 
+    radial-gradient(circle at top left, var(--color-neon-blue) 0%, transparent 20%),
+    radial-gradient(circle at bottom right, var(--color-neon-purple) 0%, transparent 25%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: white;
 }
