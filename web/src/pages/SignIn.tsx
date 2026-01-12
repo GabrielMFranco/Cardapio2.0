@@ -54,9 +54,9 @@ export function SignIn(){
         overflow-y-auto
         overflow-x-hidden
         ">
-            <div className="flex flex-col items-center justify-center gap-4 pt-4 w-full max-h-full" >
+            <div className="flex flex-col items-center justify-center gap-4 pt-3 w-full max-h-full" >
                 <img src={logoOD} alt="logo obli drinks" className="w-80 h-80 md:w-100 md:h-100 mix-blend-screen rounded-full object-contain shrink-0"/>
-                <form action={formAction} className="flex flex-col w-full max-w-75 items-center py-8 bg-zinc-800/30 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl">
+                <form action={formAction} className="flex flex-col w-full max-w-75 items-center py-4 bg-zinc-800/30 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl">
                     <Input
                         name="user"
                         legend="Usuário"
