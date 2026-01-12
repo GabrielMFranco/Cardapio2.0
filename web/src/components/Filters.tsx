@@ -16,7 +16,7 @@ export function Filers(){
     ];
 
     return (
-        <div className="flex items-center justify-center mt-10 gap-3">
+        <div className="flex flex-wrap items-center justify-center mt-10 gap-3">
             {categories.map((item) => (
                 <button 
                     key={item.id}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createContext, ReactNode } from "react";
+import { createContext, type ReactNode } from "react";
 
 type AuthContext = {
     isLoading: boolean
