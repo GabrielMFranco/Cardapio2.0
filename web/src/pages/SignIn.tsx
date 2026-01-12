@@ -51,8 +51,8 @@ export function SignIn(){
         flex
         justify-center
         ">
-            <div className="flex flex-col items-center gap-4">
-                <img src={logoOD} alt="logo obli drinks" className="w-100 h-100 mix-blend-screen rounded-full"/>
+            <div className="flex flex-col items-center justify-center gap-4 w-full max-h-full" >
+                <img src={logoOD} alt="logo obli drinks" className="w-40 h-40 md:w-80 md:h-80 mix-blend-screen rounded-full object-contain shrink-0"/>
                 <form action={formAction} className="flex flex-col w-full max-w-75 items-center py-8 bg-zinc-800/30 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl">
                     <Input
                         name="user"
