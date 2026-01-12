@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
+enum Composition {
+  LEMON
+  ORANGE
+  STRAWBERRY
+  PINEAPPLE
+  NON_ALCOHOLIC
+  OTHERS
+}
+
+model User {
+  id       String   @id @default(uuid())
+  user     String   @unique
+  password String
+  role     UserRole @default(CUSTOMER)
+
+  @@map("users")
+}
+
+model Drink {
+  id          String      @id @default(uuid())
+  name        String
+  img         String
+  ingredients String
+  composition Composition @default(OTHERS)
+
+  @@map("drinks")
+}
