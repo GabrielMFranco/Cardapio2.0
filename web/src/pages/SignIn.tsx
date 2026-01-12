@@ -8,7 +8,6 @@ import { Input } from "../components/Input";
 import logoOD from "../../public/logoOD.png";
 import { api } from "../services/api";
 import { useAuth } from "../hooks/useAuth";
-import { useNavigate } from "react-router";
 
 const signInScheme = z.object({
     user: z.string().trim().min(1, {message: "Informe o usuário"}),
@@ -16,8 +15,6 @@ const signInScheme = z.object({
 })
 
 export function SignIn(){
-    const navigate = useNavigate()
-
     const [state, formAction, isLoading] = useActionState(onAction, null)
 
     const auth = useAuth()
