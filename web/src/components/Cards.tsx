@@ -2,6 +2,9 @@ import lagoaAzul from "../assets/img/CuraçauBlue.png"
 import sexOnTheBeach from "../assets/img/SexOnTheBeach.jpeg"
 import morango from "../assets/img/DrinkMorango.png"
 import marula from "../assets/img/DrinkMarula.png"
+import { Plus, Trash2 } from 'lucide-react';
+
+import { useAuth } from "../hooks/useAuth"
 
 export function Cards(){
     const cards = [
@@ -10,6 +13,9 @@ export function Cards(){
         {name: "Drink de Morango", img: morango, ingredients: ["Morango", "limão", "agua com gás", "Vodka"]},
         {name: "Drink de Marula", img: marula, ingredients: ["teste"]},
     ]
+
+    const auth = useAuth()
+    const userRole = auth.signin?.user.role
 
     return(
         <div className="my-20 mx-auto px-15 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-300">
@@ -34,10 +40,29 @@ export function Cards(){
                                     </li>
                                 ))}
                             </ul>
+                            
+                            {userRole == "ADMIN" && (    
+                                <button className="mt-7 group/trash">
+                                    <Trash2 className="text-zinc-500 transition-colors duration-300 group-hover/trash:text-red-500"/>
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
             ))}
+
+            {userRole == "ADMIN" && (
+                <button 
+                    className="flex flex-col items-center justify-center mx-auto my-5 h-120 w-full max-w-75 min-w-75 bg-zinc-800/20 backdrop-blur-md border-2 border-dashed border-white/20 rounded-2xl hover:border-cyan-500/50 hover:bg-zinc-800/40 transition-all group gap-5"
+                >
+                    <div className="font-bold h-10 w-10">
+                        <Plus size={48} className="text-white/30 group-hover:text-cyan-400"/>
+                    </div>
+                    <p className="font-bold text-white/30 group-hover:text-cyan-400 mt-2 uppercase tracking-widest text-xs">
+                        Novo Drink
+                    </p>
+                </button>
+            )}
         </div>
     )
 }
