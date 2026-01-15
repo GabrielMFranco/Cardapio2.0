@@ -24,3 +24,32 @@ body {
   padding: 0;
   color: white;
 }
+
+@layer components{
+  .drink-title-custom{
+    @apply self-center text-2xl font-black tracking-tighter text-transparent bg-clip-text font-['Roboto'];
+    background-image: linear-gradient(to right, rgb(149,114,252), rgb(67,231,173), rgb(226,212,92));
+  }
+
+
+  .drink-title-ingredient{
+    @apply text-cyan-400 font-bold mb-2 uppercase text-sm tracking-widest border-b border-cyan-400/30;
+  }
+
+
+  .drink-ingredient-ul{
+    @apply flex flex-col gap-2 text-zinc-100 text-sm font-['Roboto'] mt-2;
+    list-style: none; 
+  }
+
+  .drink-ingredient-ul li {
+    @apply flex items-start gap-2 transition-colors duration-200 hover:text-white;
+  }
+
+  .drink-ingredient-ul li::before {
+    content: "";
+    @apply h-1.5 w-1.5 rounded-full bg-cyan-500 mt-1.5;
+    box-shadow: 0 0 6px rgba(6, 182, 212, 0.6);
+    flex-shrink: 0;
+  }
+}

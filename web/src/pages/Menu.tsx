@@ -1,5 +1,5 @@
 import { Header } from "../components/Header";
-import { Filers } from "../components/Filters";
+import { Filters } from "../components/Filters";
 import { Cards } from "../components/Cards";
 
 export function Menu(){
@@ -7,7 +7,7 @@ export function Menu(){
         <div>
             <Header/>
 
-            <Filers/>
+            <Filters/>
 
             <Cards/>
         </div>
