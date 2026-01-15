@@ -1,10 +1,11 @@
-import lagoaAzul from "../assets/img/CuraçauBlue.png"
-import sexOnTheBeach from "../assets/img/SexOnTheBeach.jpeg"
-import morango from "../assets/img/DrinkMorango.png"
-import marula from "../assets/img/DrinkMarula.png"
+import lagoaAzul from "../assets/img/CuraçauBlue.png";
+import sexOnTheBeach from "../assets/img/SexOnTheBeach.jpeg";
+import morango from "../assets/img/DrinkMorango.png";
+import marula from "../assets/img/DrinkMarula.png";
 import { Plus, Trash2 } from 'lucide-react';
 
-import { useAuth } from "../hooks/useAuth"
+import { useAuth } from "../hooks/useAuth";
+import { DrinkDialog } from "./DrinksDialog";
 
 export function Cards(){
     const cards = [
@@ -20,8 +21,8 @@ export function Cards(){
     return(
         <div className="my-20 mx-auto px-15 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-300">
             {cards.map((item, index) => (
-                <div key={index} className="group flex flex-col gap-2 p-5 mx-auto my-5 border border-white/5 shadow-xl hover:border-cyan-500/30 transition-all bg-zinc-800/40 rounded-2xl  backdrop-blur-md max-w-75 min-w-75">
-                    <h3 className="self-center text-2xl font-black tracking-tighter text-transparent bg-clip-text bg-[linear-gradient(to_right,rgb(149,114,252),rgb(67,231,173),rgb(226,212,92))] font-['Roboto']">
+                <div key={index} className="group flex flex-col gap-2 p-5 mx-auto my-5 border border-white/5 shadow-xl hover:border-cyan-500/30 transition-all bg-zinc-800/40 rounded-2xl backdrop-blur-md max-w-75 min-w-75">
+                    <h3 className="drink-title-custom">
                         {item.name}
                     </h3>
 
@@ -29,14 +30,14 @@ export function Cards(){
                         <img src={item.img} alt="imagem do drink" className="w-full h-full object-cover"/>
 
                         <div className="absolute inset-0 bg-zinc-900/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
-                            <h4 className="text-cyan-400 font-bold mb-2 uppercase text-sm tracking-widest border-b border-cyan-400/30">
+                            <h4 className="drink-title-ingredient">
                                 Ingredientes
                             </h4>
 
-                            <ul className="text-zinc-100 text-sm font-['Roboto'] space-y-1">
+                            <ul className="drink-ingredient-ul">
                                 {item.ingredients.map((ingredient, i) => (
-                                    <li key={i} className="list-none">
-                                        - {ingredient}
+                                    <li key={i}>
+                                        {ingredient}
                                     </li>
                                 ))}
                             </ul>
@@ -52,16 +53,19 @@ export function Cards(){
             ))}
 
             {userRole == "ADMIN" && (
-                <button 
-                    className="flex flex-col items-center justify-center mx-auto my-5 h-120 w-full max-w-75 min-w-75 bg-zinc-800/20 backdrop-blur-md border-2 border-dashed border-white/20 rounded-2xl hover:border-cyan-500/50 hover:bg-zinc-800/40 transition-all group gap-5"
-                >
-                    <div className="font-bold h-10 w-10">
-                        <Plus size={48} className="text-white/30 group-hover:text-cyan-400"/>
-                    </div>
-                    <p className="font-bold text-white/30 group-hover:text-cyan-400 mt-2 uppercase tracking-widest text-xs">
-                        Novo Drink
-                    </p>
-                </button>
+                <DrinkDialog>
+                    <button 
+                        className="flex flex-col items-center justify-center mx-auto my-5 h-120 w-full max-w-75 min-w-75 bg-zinc-800/20 backdrop-blur-md border-2 border-dashed border-white/20 rounded-2xl hover:border-cyan-500/50 hover:bg-zinc-800/40 transition-all group gap-5"
+
+                    >
+                        <div className="font-bold h-10 w-10">
+                            <Plus size={48} className="text-white/30 group-hover:text-cyan-400"/>
+                        </div>
+                        <p className="font-bold text-white/30 group-hover:text-cyan-400 mt-2 uppercase tracking-widest text-xs">
+                            Novo Drink
+                        </p>
+                    </button>
+                </DrinkDialog>
             )}
         </div>
     )
