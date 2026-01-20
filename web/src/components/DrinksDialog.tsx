@@ -1,22 +1,39 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from 'lucide-react';
+import { useActionState, useState } from "react";
+import { api } from "../services/api";
+
 import { Input } from './Input';
 import { Button } from './Button';
 import { Upload } from "./Upload";
-import { useState } from "react";
 import { Filters } from "./Filters";
+
+import { AxiosError } from "axios";
+import z, { ZodError } from "zod";
+
+const drinkSchema = z.object({
+    name: z.string().min(3,"O nome deve ter pelo menos 3 letras"),
+    ingredients: z.array(z.string()).min(1, "Adicione pelo menos um ingrediente"),
+    img: z.instanceof(File, { message: "A imagem é obrigatória" }),
+    categories: z.array(z.string()).min(1, "Selecione pelo menos uma categoria"),
+})
 
 export function DrinkDialog({ children }: { children: React.ReactNode }){
     const [name, setName] = useState("")
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [ingredients, setIngredients] = useState<string[]>([])
-    const [currentIngredient, setCurrentIngredient] = useState("");
+    const [currentIngredient, setCurrentIngredient] = useState("")
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
+    const [ state, formAction, isLoading ] = useActionState(onAction, null)
+    
     function imageFileChange(e: React.ChangeEvent<HTMLInputElement>){
         const file = e.target.files?.[0]
-        if(file){
-            setImageFile(file)
+        if(!file){
+            return
         }
+
+        setImageFile(file)
     }
     
     function nameChange(e: React.ChangeEvent<HTMLInputElement>){
@@ -54,6 +71,42 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
 
     }
 
+    async function onAction(_: any, formData: FormData){
+        try {
+            drinkSchema.parse({
+                name,
+                ingredients,
+                img: imageFile,
+                categories: selectedCategories,
+            })
+
+            const data = new FormData()
+
+            data.append("name", name)
+            data.append("ingredients", JSON.stringify(ingredients));
+            data.append("categories", JSON.stringify(selectedCategories));
+            if(imageFile){
+                data.append("img",imageFile)
+            }
+
+            await api.post("/menu", data)
+
+            alert("Drink criado com sucesso!");
+
+            window.location.reload();
+        } catch (error) {
+            console.log(error)
+
+            if(error instanceof AxiosError){
+                return { message: error.response?.data.message || "Erro no servidor" }
+            }
+
+            if(error instanceof ZodError){
+                setImageFile(null);
+                return { message: error.issues[0].message }
+            }
+        }
+    }
     return(
         <Dialog.Root>
             <Dialog.Trigger asChild>
@@ -79,10 +132,11 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-h-[85vh] overflow-y-auto overflow-x-hidden px-2">
-                        <form action="" className="flex flex-col gap-5 ">
+                        <form action={formAction} className="flex flex-col gap-5 ">
                             <Input
                                 name="name"
-                                legend="Nome" 
+                                legend="Nome"
+                                value={name}
                                 required 
                                 placeholder="Nome do seu drink"
                                 onChange={nameChange}
@@ -91,8 +145,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
                             <div className="flex flex-col gap-1 border border-white/5 rounded-xl p-2"> 
                                 <Input
                                     name="ingredients"
-                                    legend="Ingredientes" 
-                                    required 
+                                    legend="Ingredientes"
                                     placeholder="Ex: Suco de limão"
                                     value={currentIngredient}
                                     onChange={(e) => setCurrentIngredient(e.target.value)}
@@ -121,16 +174,24 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
                             <Upload
                                 legend="Imagem do Drink"
                                 required
+                                filename={imageFile && imageFile.name}
                                 onChange={imageFileChange}
                              />
 
-                            <div className="flex flex-wrap">
+                            <div className="flex flex-col">
                                 <p className="text-zinc-400 text-sm font-semibold ml-1">
                                     Categorias:
                                 </p>
 
-                                <Filters isMini={true}/>
+                                <Filters
+                                    isMini={true}
+                                    onFilterChange={setSelectedCategories}
+                                />
                             </div>
+
+                            <p className="text-sm text-red-600 text-center my-4 font-medium">
+                                {state?.message}
+                            </p>
 
                             <div className="flex justify-center">
                                 <Button type="submit">
@@ -139,7 +200,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
                             </div>
                         </form>
 
-                        <div className="group flex flex-col gap-2 p-5 mx-auto my-5 border border-white/5 shadow-xl hover:border-cyan-500/30 transition-all bg-zinc-800/40 rounded-2xl backdrop-blur-md max-w-75 min-w-75">
+                        <div className="group flex flex-col gap-2 p-5 mx-auto my-5 border border-white/5 shadow-xl hover:border-cyan-500/30 transition-all bg-zinc-800/40 rounded-2xl backdrop-blur-md max-w-75 min-w-75 self-center">
                             <h3 className="drink-title-custom">
                                 {name || "Nome do Drink"}
                             </h3>

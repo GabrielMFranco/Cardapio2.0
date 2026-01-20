@@ -9,9 +9,10 @@ import otherPNG from "../assets/img/others.png"
 
 interface FiltersProps {
   isMini?: boolean;
+  onFilterChange?: (selected: string[]) => void;
 }
 
-export function Filters({isMini = false}: FiltersProps){
+export function Filters({isMini = false, onFilterChange}: FiltersProps){
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
     const categories = [
@@ -24,11 +25,19 @@ export function Filters({isMini = false}: FiltersProps){
     ];
 
     const toggleFilter = (id: string) => {
-        setSelectedCategories((prev) =>
-            prev.includes(id) 
+        setSelectedCategories((prev) => {
+            const newSelection = prev.includes(id)
                 ? prev.filter((item) => item !== id)
                 : [...prev, id]
-        );
+
+                setTimeout(() => {
+                    if (onFilterChange) {
+                        onFilterChange(newSelection);
+                    }
+                }, 0);
+
+                return newSelection;
+        });
     };
 
     return (
