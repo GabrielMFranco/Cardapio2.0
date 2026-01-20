@@ -2,10 +2,13 @@ import express from "express";
 import cors from "cors";
 import { routes } from "./routes";
 import { errorHandling } from "./middlewares/errorHandling";
+import uploadConfig from "./config/upload"
 
 export const app = express()
 app.use(cors())
 app.use(express.json())
+
+app.use("/uploads", express.static(uploadConfig.UPLOADS_FOLDER))
 
 app.use(routes)
 

@@ -35,7 +35,7 @@ model Drink {
   name        String
   img         String
   ingredients String
-  composition Composition @default(OTHERS)
+  categories String
 
   @@map("drinks")
 }
