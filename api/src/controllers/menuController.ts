@@ -34,7 +34,25 @@ export class MenuController{
     }
 
     async index(req: Request, res: Response){
-        const drinks = await prisma.drink.findMany()
+        const { categories } = req.query
+
+        let where = {}
+
+        if(categories){
+            const selectedArray = JSON.parse(String(categories))
+
+            if(selectedArray.length > 0){
+                where = {
+                    OR: selectedArray.map((cat: string) =>({
+                        categories: {
+                            contains: cat
+                        }
+                    }))
+                }
+            }
+        }
+
+        const drinks = await prisma.drink.findMany({ where })
         return res.json(drinks);
     }
 

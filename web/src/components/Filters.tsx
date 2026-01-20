@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import lemonPNG from "../assets/img/lemon.png"
 import orangePNG from "../assets/img/orange.png"
@@ -29,16 +29,16 @@ export function Filters({isMini = false, onFilterChange}: FiltersProps){
             const newSelection = prev.includes(id)
                 ? prev.filter((item) => item !== id)
                 : [...prev, id]
-
-                setTimeout(() => {
-                    if (onFilterChange) {
-                        onFilterChange(newSelection);
-                    }
-                }, 0);
-
+               
                 return newSelection;
         });
     };
+
+    useEffect(() => {
+        if (onFilterChange) {
+            onFilterChange(selectedCategories);
+        }
+    }, [selectedCategories]);
 
     return (
         <div className={`flex flex-wrap items-center justify-center  gap-5 ${isMini ? 'mt-2' : 'mt-10'}`}>
@@ -49,7 +49,7 @@ export function Filters({isMini = false, onFilterChange}: FiltersProps){
                     <button 
                         key={item.id}
                         type="button"
-                        className={`flex flex-col items-center group transition-all ${isMini ? 'gap-0' : 'gap-2 mt-10'}`}
+                        className={`hover:cursor-pointer flex flex-col items-center group transition-all ${isMini ? 'gap-0' : 'gap-2 mt-10'}`}
                         onClick={() => toggleFilter(item.id)}
                     >
                         <div className={`

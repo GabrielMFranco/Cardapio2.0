@@ -12,15 +12,12 @@ interface Drink {
     ingredients: string | string[]
 }
 
-export function Cards(){
-    /*const cards = [
-        {name: "Lagoa Azul", img: lagoaAzul, ingredients: ["Limão", "Curaçau blue", "Vodka", "Água com gás", "Xarope de açucar"]},
-        {name: "Sex on the Beach", img: sexOnTheBeach, ingredients: ["Suco de laranja", "Vodka", "Licor de pêssego", "grenadine"]},
-        {name: "Drink de Morango", img: morango, ingredients: ["Morango", "limão", "agua com gás", "Vodka"]},
-        {name: "Drink de Marula", img: marula, ingredients: ["teste"]},
-    ]*/
+interface CardsProps {
+    data: Drink[];
+    onRefresh: () => void;
+}
 
-    const [cards, setCards] = useState<Drink[]>([])
+export function Cards({ data, onRefresh }: CardsProps){
     const auth = useAuth()
     const userRole = auth.signin?.user.role
 
@@ -33,40 +30,18 @@ export function Cards(){
         try {
             await api.delete(`/menu/${id}`)
 
-            setCards(prev => prev.filter(drink => drink.id !== id));
-
             alert("Drink removido!");
+            
+            onRefresh();
         } catch (error) {
             console.error("Erro ao deletar:", error);
             alert("Não foi possível deletar o drink.");
         }
     }
 
-    async function fetchDrinks() {
-        try {
-            const response = await api.get("/menu")
-
-            const formattedDrinks = response.data.map((drink: Drink) => ({
-                ...drink,
-                ingredients:typeof drink.ingredients === "string"
-                    ? JSON.parse(drink.ingredients)
-                    : drink.ingredients,
-                img: `${api.defaults.baseURL}/uploads/${drink.img}`
-            }))
-
-            setCards(formattedDrinks)
-        } catch (error) {
-            console.error("Erro ao carregar drinks:", error);
-        }
-    }
-
-    useEffect(() => {
-        fetchDrinks();
-    }, []);
-
     return(
         <div className="my-20 mx-auto px-15 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-300">
-            {cards.map((item) => (
+            {data.map((item) => (
                 <div key={item.id} className="group flex flex-col gap-2 p-5 mx-auto my-5 border border-white/5 shadow-xl hover:border-cyan-500/30 transition-all bg-zinc-800/40 rounded-2xl backdrop-blur-md max-w-75 min-w-75">
                     <h3 className="drink-title-custom">
                         {item.name}
