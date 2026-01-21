@@ -3,6 +3,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { useAuth } from "../hooks/useAuth";
 import { DrinkDialog } from "./DrinksDialog";
 import { api } from "../services/api";
+import { useState } from 'react';
 
 interface Drink {
     id: string
@@ -17,6 +18,7 @@ interface CardsProps {
 }
 
 export function Cards({ data, onRefresh }: CardsProps){
+    const [openId, setOpenId] = useState<string | null>(null)
     const auth = useAuth()
     const userRole = auth.signin?.user.role
 
@@ -40,16 +42,24 @@ export function Cards({ data, onRefresh }: CardsProps){
 
     return(
         <div className="my-20 mx-auto px-15 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-300">
-            {data.map((item) => (
+            {data.map((item) => {
+                const isOpen = openId === item.id
+
+                return(
                 <div key={item.id} className="group flex flex-col gap-2 p-5 mx-auto my-5 border border-white/5 shadow-xl hover:border-cyan-500/30 transition-all bg-zinc-800/40 rounded-2xl backdrop-blur-md max-w-75 min-w-75">
                     <h3 className="drink-title-custom">
                         {item.name}
                     </h3>
 
-                    <div className="relative w-full h-90 overflow-hidden rounded-xl self-center shadow-lg shadow-black/50">
+                    <div
+                        className="relative w-full h-90 overflow-hidden rounded-xl self-center shadow-lg shadow-black/50"
+                        onClick={() =>
+                            setOpenId((prev) => (prev === item.id ? null : item.id))
+                        }
+                    >
                         <img src={item.img} alt="imagem do drink" className="w-full h-full object-cover"/>
 
-                        <div className="absolute inset-0 bg-zinc-900/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
+                        <div className={`absolute inset-0 bg-zinc-900/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 ${isOpen ? "opacity-100" : ""}`}>
                             <h4 className="drink-title-ingredient">
                                 Ingredientes
                             </h4>
@@ -63,14 +73,20 @@ export function Cards({ data, onRefresh }: CardsProps){
                             </ul>
                             
                             {userRole == "ADMIN" && (    
-                                <button className="mt-7 group/trash" onClick={() => handleDelete(item.id)}>
+                                <button 
+                                    className="mt-7 group/trash"
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleDelete(item.id)
+                                    }}
+                                >
                                     <Trash2 className="text-zinc-500 transition-colors duration-300 group-hover/trash:text-red-500"/>
                                 </button>
                             )}
                         </div>
                     </div>
                 </div>
-            ))}
+            )})}
 
             {userRole == "ADMIN" && (
                 <DrinkDialog>

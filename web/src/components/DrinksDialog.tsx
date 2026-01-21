@@ -107,7 +107,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
             }
         }
     }
-    
+
     return(
         <Dialog.Root>
             <Dialog.Trigger asChild>
@@ -120,7 +120,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
                     onPointerDownOutside={(e) => e.preventDefault()}
                     className="w-[90vw] max-w-200 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-zinc-900 p-8 rounded-3xl z-50"
                 >
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center justify-between mb-8 mt-3">
                         <div className="w-6" />
                         
                         <Dialog.Title className="text-white flex justify-between">
