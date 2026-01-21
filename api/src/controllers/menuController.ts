@@ -60,7 +60,7 @@ export class MenuController{
         const {id} = req.params
 
         try {
-            const drink = await  prisma.drink.findUnique({where: {id}})
+            const drink = await prisma.drink.findUnique({where: {id}})
 
             if(!drink){
                 return res.status(404).json({ message: "Drink não encontrado." });
@@ -76,6 +76,54 @@ export class MenuController{
             return res.json()
         } catch (error) {
             return res.status(500).json({ message: "Erro ao deletar o drink." });
+        }
+    }
+    
+    async updated(req: Request, res: Response){
+        const { id } = req.params
+        const { name, ingredients, categories } = req.body
+        const img = req.file
+
+        try {
+            const drink = await prisma.drink.findUnique({where: {id}})
+
+            if(!drink){
+                return res.status(404).json({ message: "Drink não encontrado." })
+            }
+
+            let imageFilename = drink.img
+
+            if (img?.filename) {
+                const diskStorage = new DiskStorage()
+
+                if (drink.img) {
+                    await diskStorage.deleteFile(drink.img, "upload")
+                }
+
+                await diskStorage.saveFile(img.filename)
+                imageFilename = img.filename
+            }
+
+            const updatedDrink = await prisma.drink.update({
+                where: {id},
+                data: {
+                    name,
+                    img: imageFilename,
+                    ingredients:
+                        typeof ingredients === "string"
+                            ? ingredients
+                            : JSON.stringify(ingredients),
+                    categories:
+                        typeof categories === "string"
+                        ? categories
+                        : JSON.stringify(categories)
+                }
+            })
+
+            return res.json(updatedDrink)
+        } catch (error) {
+            console.error(error)
+            return res.status(500).json({ message: "Erro ao editar o drink." })
         }
     }
 }

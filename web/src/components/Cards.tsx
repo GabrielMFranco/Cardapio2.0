@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Edit2 } from 'lucide-react';
 
 import { useAuth } from "../hooks/useAuth";
 import { DrinkDialog } from "./DrinksDialog";
@@ -72,16 +72,25 @@ export function Cards({ data, onRefresh }: CardsProps){
                                 ))}
                             </ul>
                             
-                            {userRole == "ADMIN" && (    
-                                <button 
-                                    className="mt-7 group/trash"
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleDelete(item.id)
-                                    }}
-                                >
-                                    <Trash2 className="text-zinc-500 transition-colors duration-300 group-hover/trash:text-red-500"/>
-                                </button>
+                            {userRole == "ADMIN" && ( 
+                                <div className="flex gap-2 justify-center">  
+                                    <button 
+                                        className="mt-7 group/trash"
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleDelete(item.id)
+                                        }}
+                                    >
+                                        <Trash2 className="text-zinc-500 transition-colors duration-300 group-hover/trash:text-red-500"/>
+                                    </button>
+                                    <DrinkDialog drink={item}>
+                                        <button
+                                            className="mt-7 group/edit"
+                                        >
+                                            <Edit2 className="text-zinc-500 transition-colors duration-300 group-hover/edit:text-yellow-500"/>
+                                        </button>
+                                    </DrinkDialog>
+                                </div> 
                             )}
                         </div>
                     </div>

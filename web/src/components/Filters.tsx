@@ -10,11 +10,10 @@ import otherPNG from "../assets/img/others.png"
 interface FiltersProps {
   isMini?: boolean;
   onFilterChange?: (selected: string[]) => void;
+  selected?: string[]
 }
 
-export function Filters({isMini = false, onFilterChange}: FiltersProps){
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
+export function Filters({isMini = false, onFilterChange, selected = []}: FiltersProps){
     const categories = [
         { id: 'limao', img: lemonPNG, label: 'Limão' },
         { id: 'laranja', img: orangePNG, label: 'Laranja' },
@@ -25,32 +24,26 @@ export function Filters({isMini = false, onFilterChange}: FiltersProps){
     ];
 
     const toggleFilter = (id: string) => {
-        setSelectedCategories((prev) => {
-            const newSelection = prev.includes(id)
-                ? prev.filter((item) => item !== id)
-                : [...prev, id]
-               
-                return newSelection;
-        });
-    };
-
-    useEffect(() => {
-        if (onFilterChange) {
-            onFilterChange(selectedCategories);
+        const newSelection = selected.includes(id)
+            ? selected.filter((item) => item !== id)
+            : [...selected, id]
+        
+        if(onFilterChange){
+            onFilterChange(newSelection);
         }
-    }, [selectedCategories]);
+    };
 
     return (
         <div className={`flex flex-wrap items-center justify-center  gap-5 ${isMini ? 'mt-2' : 'mt-10'}`}>
-            {categories.map((item) => {
-                const isSelected = selectedCategories.includes(item.id);
+            {categories.map((category) => {
+                const isSelected = selected.includes(category.id);
 
                 return (
                     <button 
-                        key={item.id}
+                        key={category.id}
                         type="button"
                         className={`hover:cursor-pointer flex flex-col items-center group transition-all ${isMini ? 'gap-0' : 'gap-2 mt-10'}`}
-                        onClick={() => toggleFilter(item.id)}
+                        onClick={() => toggleFilter(category.id)}
                     >
                         <div className={`
                             ${isMini ? 'w-10 h-10' : 'w-16 h-16'} flex items-center justify-center rounded-2xl backdrop-blur-md transition-all duration-300 shadow-lg
@@ -60,8 +53,8 @@ export function Filters({isMini = false, onFilterChange}: FiltersProps){
                             }
                         `}>
                             <img 
-                                src={item.img} 
-                                alt={item.label} 
+                                src={category.img} 
+                                alt={category.label} 
                                 className={`${isMini ? 'w-6 h-6' : 'w-10 h-10'}object-contain transition-all ${isSelected ? "brightness-110" : "grayscale-[0.5] group-hover:grayscale-0"}`}
                             />
                         </div>
@@ -70,7 +63,7 @@ export function Filters({isMini = false, onFilterChange}: FiltersProps){
                                 text-[10px] uppercase font-bold tracking-widest transition-colors
                                 ${isSelected ? "text-green-400" : "text-zinc-500 group-hover:text-cyan-400"}
                             `}>
-                                {item.label}
+                                {category.label}
                             </span>
                         )}
                     </button>

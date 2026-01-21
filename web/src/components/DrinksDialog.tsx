@@ -1,6 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from 'lucide-react';
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { api } from "../services/api";
 
 import { Input } from './Input';
@@ -11,22 +11,54 @@ import { Filters } from "./Filters";
 import { AxiosError } from "axios";
 import z, { ZodError } from "zod";
 
+interface DialogProps {
+    children: React.ReactNode
+    drink?: Drink
+}
+
 const drinkSchema = z.object({
     name: z.string().min(3,"O nome deve ter pelo menos 3 letras"),
     ingredients: z.array(z.string()).min(1, "Adicione pelo menos um ingrediente"),
-    img: z.instanceof(File, { message: "A imagem é obrigatória" }),
     categories: z.array(z.string()).min(1, "Selecione pelo menos uma categoria"),
 })
 
-export function DrinkDialog({ children }: { children: React.ReactNode }){
+export function DrinkDialog({ children, drink }: DialogProps){
+    const [isOpen, setIsOpen] = useState(false);
     const [name, setName] = useState("")
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [ previewImage, setPreviewImage ] = useState<string | null>(null)
     const [ingredients, setIngredients] = useState<string[]>([])
     const [currentIngredient, setCurrentIngredient] = useState("")
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
+    useEffect(() => {
+        if(isOpen){
+            if(drink){
+                setName(drink.name)
+                setIngredients([...drink.ingredients])
+                setSelectedCategories(Array.isArray(drink.categories)
+                ? drink.categories
+                : drink.categories
+                    ? JSON.parse(drink.categories)
+                    : [])
+                setPreviewImage(drink.img)
+                setImageFile(null)
+            }else{
+                resetForm()
+            }
+        }
+    }, [isOpen, drink])
+
     const [ state, formAction, isLoading ] = useActionState(onAction, null)
     
+    function resetForm() {
+        setName("")
+        setIngredients([])
+        setSelectedCategories([])
+        setImageFile(null)
+        setPreviewImage(null)
+    }
+
     function imageFileChange(e: React.ChangeEvent<HTMLInputElement>){
         const file = e.target.files?.[0]
         if(!file){
@@ -89,9 +121,14 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
                 data.append("img",imageFile)
             }
 
-            await api.post("/menu", data)
+            if(drink){
+                await api.put(`/menu/${drink.id}`, data)
+            }
+            else{
+                await api.post("/menu", data)
+                alert("Drink criado com sucesso!");
+            }
 
-            alert("Drink criado com sucesso!");
 
             window.location.reload();
         } catch (error) {
@@ -109,7 +146,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
     }
 
     return(
-        <Dialog.Root>
+        <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
             <Dialog.Trigger asChild>
                 {children} 
             </Dialog.Trigger>
@@ -124,7 +161,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
                         <div className="w-6" />
                         
                         <Dialog.Title className="text-white flex justify-between">
-                            Novo Drink
+                            {drink ? "Editar Drink" : "Novo Drink"}
                         </Dialog.Title>
 
                         <Dialog.Close className="text-zinc-500 hover:text-red-600 transition-colors outline-none">
@@ -174,7 +211,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
 
                             <Upload
                                 legend="Imagem do Drink"
-                                required
+                                required={!drink}
                                 filename={imageFile && imageFile.name}
                                 onChange={imageFileChange}
                              />
@@ -187,6 +224,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
                                 <Filters
                                     isMini={true}
                                     onFilterChange={setSelectedCategories}
+                                    selected={selectedCategories}
                                 />
                             </div>
 
@@ -208,10 +246,10 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
 
                             <div className="group relative w-full h-90 overflow-hidden rounded-xl self-center shadow-lg shadow-black/50 bg-zinc-800">
 
-                                {imageFile
+                                {previewImage || imageFile
                                 ? (
                                     <img
-                                        src={URL.createObjectURL(imageFile)}
+                                        src={imageFile ? URL.createObjectURL(imageFile) : previewImage!}
                                         alt="Preview da imagem"
                                         className="w-full h-full object-cover transition-all duration-500 blur-md group-hover:blur-none opacity-40 group-hover:opacity-100"
                                     />

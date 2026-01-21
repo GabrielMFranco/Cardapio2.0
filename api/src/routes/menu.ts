@@ -24,3 +24,9 @@ menuRoutes.delete(
     verifyUserAuthorization(["ADMIN"]),
     menuController.delete
 )
+menuRoutes.put(
+    "/:id",
+    verifyUserAuthorization(["ADMIN"]),
+    upload.single("img"),
+    menuController.updated
+)
