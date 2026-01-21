@@ -71,7 +71,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
 
     }
 
-    async function onAction(_: any, formData: FormData){
+    async function onAction(_: any, _formData: FormData){
         try {
             drinkSchema.parse({
                 name,
@@ -194,7 +194,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
                             </p>
 
                             <div className="flex justify-center">
-                                <Button type="submit">
+                                <Button type="submit" disabled={isLoading}>
                                     Finalizar
                                 </Button>
                             </div>
