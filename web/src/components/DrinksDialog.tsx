@@ -107,6 +107,7 @@ export function DrinkDialog({ children }: { children: React.ReactNode }){
             }
         }
     }
+    
     return(
         <Dialog.Root>
             <Dialog.Trigger asChild>

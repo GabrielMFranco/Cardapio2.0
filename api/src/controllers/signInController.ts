@@ -9,8 +9,8 @@ import { sign } from "jsonwebtoken";
 export class SignInController{
     async create(req: Request, res: Response){
         const bodySchema = z.object({
-            user: z.string().min(5),
-            password: z.string().min(5),
+            user: z.string(),
+            password: z.string(),
         })
 
         const { user, password } = bodySchema.parse(req.body)
