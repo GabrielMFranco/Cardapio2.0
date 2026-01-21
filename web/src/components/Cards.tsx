@@ -2,7 +2,6 @@ import { Plus, Trash2 } from 'lucide-react';
 
 import { useAuth } from "../hooks/useAuth";
 import { DrinkDialog } from "./DrinksDialog";
-import { useState, useEffect } from "react";
 import { api } from "../services/api";
 
 interface Drink {
