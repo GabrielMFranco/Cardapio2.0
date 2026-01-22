@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react"
-
 import lemonPNG from "../assets/img/lemon.png"
 import orangePNG from "../assets/img/orange.png"
 import abacaxiPNG from "../assets/img/abacaxi.png"
