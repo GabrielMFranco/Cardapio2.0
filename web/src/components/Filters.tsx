@@ -4,6 +4,7 @@ import abacaxiPNG from "../assets/img/abacaxi.png"
 import morangoPNG from "../assets/img/morango.png"
 import zeroAlcoolPNG from "../assets/img/sem-menores.png"
 import otherPNG from "../assets/img/others.png"
+import { useEffect, useState } from "react"
 
 interface FiltersProps {
   isMini?: boolean;
@@ -12,6 +13,8 @@ interface FiltersProps {
 }
 
 export function Filters({isMini = false, onFilterChange, selected = []}: FiltersProps){
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
     const categories = [
         { id: 'limao', img: lemonPNG, label: 'Limão' },
         { id: 'laranja', img: orangePNG, label: 'Laranja' },
@@ -22,19 +25,26 @@ export function Filters({isMini = false, onFilterChange, selected = []}: Filters
     ];
 
     const toggleFilter = (id: string) => {
-        const newSelection = selected.includes(id)
-            ? selected.filter((item) => item !== id)
-            : [...selected, id]
-        
-        if(onFilterChange){
-            onFilterChange(newSelection);
-        }
+        setSelectedCategories((prev) => {
+            const newSelection = prev.includes(id)
+                ? prev.filter((item) => item !== id)
+                : [...prev, id]
+             
+            if(onFilterChange){
+                onFilterChange(newSelection);
+            }
+            return newSelection
+        })
     };
+
+    useEffect(() => {
+        setSelectedCategories(selected);
+    }, [selected]);
 
     return (
         <div className={`flex flex-wrap items-center justify-center  gap-5 ${isMini ? 'mt-2' : 'mt-10'}`}>
             {categories.map((category) => {
-                const isSelected = selected.includes(category.id);
+                const isSelected = selectedCategories.includes(category.id);
 
                 return (
                     <button 

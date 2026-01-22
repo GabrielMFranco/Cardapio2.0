@@ -6,6 +6,7 @@ import { api } from "../services/api";
 
 export function Menu(){
     const [ cards, setCards ] = useState([])
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
     async function fetchDrinks(category: string[] = []) {
         try {
@@ -37,7 +38,7 @@ export function Menu(){
         <div>
             <Header/>
 
-            <Filters onFilterChange={(ids) => fetchDrinks(ids)}/>
+            <Filters selected={selectedCategories} onFilterChange={(ids) => fetchDrinks(ids)}/>
 
             <Cards data={cards} onRefresh={() => fetchDrinks()}/>
         </div>
