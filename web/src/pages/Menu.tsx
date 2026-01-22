@@ -6,7 +6,7 @@ import { api } from "../services/api";
 
 export function Menu(){
     const [ cards, setCards ] = useState([])
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedCategories, _setSelectedCategories] = useState<string[]>([]);
 
     async function fetchDrinks(category: string[] = []) {
         try {
